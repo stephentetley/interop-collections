@@ -29,7 +29,11 @@ namespace Interop/ArrayList {
     use Interop.ArrayList.{ArrayList};
     use Interop.Marshal;
 
-
+    
+    pub def getArrayList(arr: ArrayList[a, r]): ##java.util.ArrayList = 
+        let ArrayList(arr1) = arr;
+        arr1
+        
     ///
     /// Returns a new mutable ArrayList.
     ///
@@ -42,10 +46,7 @@ namespace Interop/ArrayList {
         import new java.util.ArrayList(): ##java.util.ArrayList & r as newArrayList;
         ArrayList(newArrayList())
 
-    
-    pub def getArrayList(arr: ArrayList[a, r]): ##java.util.ArrayList = 
-        let ArrayList(arr1) = arr;
-        arr1
+
 
     pub def length(arr: ArrayList[a, r]): Int32 \ Read(r) = 
         import java.util.ArrayList.size(): Int32 & r;

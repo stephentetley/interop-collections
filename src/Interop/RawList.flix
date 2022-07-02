@@ -64,7 +64,7 @@ namespace Interop/RawList {
         loop(st, new1())
 
 
-    pub def fromListViaHashSet(r: Region[r], l: List[a]): RawList[a, r] \ { Write(r) } with Order[a], Marshal[a] =
+    pub def fromListViaArrayList(r: Region[r], l: List[a]): RawList[a, r] \ { Write(r) } with Marshal[a] =
         let step = st -> match st {
             case a :: rs => Some((a, rs))
             case Nil     => None

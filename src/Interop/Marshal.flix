@@ -73,6 +73,18 @@ namespace Interop {
         pub def fromJavaObject(o: ##java.lang.Object): Float64 = Interop/Marshal.unmarshalFloat64(o as ##java.lang.Double)
     }
 
+    instance Marshal[List[a]] with Marshal[a] {
+        pub def toJavaObject(l: List[a]): ##java.lang.Object =
+            region r1 {
+                Interop/RawList.fromListViaArrayList(r1, l) as ##java.lang.Object
+            } 
+        
+        pub def fromJavaObject(o: ##java.lang.Object): List[a] = 
+            region r1 {
+                Interop/RawList.new(o as ##java.util.List, r1) |> Interop/RawList.toList
+            }
+    }
+
 }
 
 
@@ -145,5 +157,5 @@ namespace Interop/Marshal {
     pub def unmarshalFloat64(d: ##java.lang.Double): Float64 = 
         import java.lang.Double.doubleValue(): Float64 & Pure;
         doubleValue(d)
-        
+
 }

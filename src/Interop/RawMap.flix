@@ -33,7 +33,7 @@ namespace Interop/RawMap {
     pub enum MapEntry[_k: Type, _v: Type, _: Region](##java.util.Map$Entry)
 
 
-    pub def getMap(m: RawMap[k, v, r]): ##java.util.Map = 
+    pub def getRawMap(m: RawMap[k, v, r]): ##java.util.Map = 
         let RawMap(m1) = m;
         m1
 
@@ -96,7 +96,7 @@ namespace Interop/RawMap {
         import java.util.Set.iterator(): ##java.util.Iterator & (r2 and r1);
         import java.util.Iterator.hasNext(): Bool & r1;
         import java.util.Iterator.next(): ##java.lang.Object & r1;
-        let set1 = entrySet(getMap(m));
+        let set1 = entrySet(getRawMap(m));
         let iter = iterator(set1);
         let isDone = () -> { 
             let ans = hasNext(iter);
