@@ -17,7 +17,7 @@
 namespace Interop {
 
     ///
-    /// Represents a ArrayList.
+    /// Represents a Java Map.
     ///
     pub enum RawMap[_k: Type, _v: Type, _r: Region](##java.util.Map)
 
@@ -29,15 +29,15 @@ namespace Interop/RawMap {
     use Interop.RawMap;
     use Interop.RawMap.{RawMap};
     use Interop.Marshal;
-    use Interop.MarshalEnum;
 
-    pub enum MapEntry[_k: Type, _v: Type,_: Region](##java.util.Map$Entry)
+    pub enum MapEntry[_k: Type, _v: Type, _: Region](##java.util.Map$Entry)
 
 
     pub def getMap(m: RawMap[k, v, r]): ##java.util.Map = 
         let RawMap(m1) = m;
         m1
 
+    pub def getRegionOf(_: RawMap[k, v, r]): Region[r] = () as Region[r]
 
     ///
     /// We don't need the inverse function `marshalMapEntry` because Java's API for building maps is `m.put(k, v)`
@@ -54,22 +54,12 @@ namespace Interop/RawMap {
         (k1, v1)
 
 
-    pub def foldMap(f: (b, MapEntry[k, v, r]) -> b & ef, s: b, m: RawMap[k, v, r]): b \ { Read(r), ef} = 
-        import java.util.Map.entrySet(): ##java.util.Set & r;
-        import java.util.Set.iterator(): ##java.util.Iterator & r;
-        import java.util.Iterator.hasNext(): Bool & r;
-        import java.util.Iterator.next(): ##java.lang.Object & r;
-        let set1 = entrySet(getMap(m));
-        let iter = iterator(set1);
-        def loop(ac) = {
-            if (hasNext(iter)) {
-                let entry = MapEntry(next(iter) as ##java.util.Map$Entry);
-                let ac1 = f(ac, entry);
-                loop(ac1)
-            } else
-                ac
-        };
-        loop(s)
+    pub def foldMap(f: (b, (k, v)) -> b & ef, s: b, m: RawMap[k, v, r]): b \ { Read(r), ef} with Order[k], Marshal[k], Marshal[v] = 
+        region r1 {
+            let iter = iterator(r1, m);
+            Iterator.foldLeft(f, s, iter)
+        }
+        
 
 
     pub def unfoldViaHashMap(_: Region[r], f: s -> Option[(k, v, s)] & ef, st: s): RawMap[k, v, r] \ { Write(r), ef } with Marshal[k], Marshal[v] =
@@ -90,9 +80,30 @@ namespace Interop/RawMap {
 
     pub def toMap(m: RawMap[k, v, r]): Map[k, v] \ { Read(r) } with Order[k], Marshal[k], Marshal[v] =
         let step = (acc, entry) -> {
-            let (k, v) = unmarshalMapEntry(entry);
+            let (k, v) = entry;
             Map.insert(k, v, acc)
         };
         foldMap(step, Map.empty(), m)
+
+    ///
+    /// Returns an iterator over all key-value pairs in `m`.
+    /// Can't use RawIterator because no Marshal instance for MapEntry
+    ///
+    pub def iterator(_r1: Region[r1], m: RawMap[k, v, r2]): Iterator[(k, v), r1] \ { Read(r2), Write(r1) } with Order[k], Marshal[k], Marshal[v] =
+        import java.util.Map.entrySet(): ##java.util.Set & r2;
+        import java.util.Set.iterator(): ##java.util.Iterator & (r2 and r1);
+        import java.util.Iterator.hasNext(): Bool & r1;
+        import java.util.Iterator.next(): ##java.lang.Object & r1;
+        let set1 = entrySet(getMap(m));
+        let iter = iterator(set1);
+        let isDone = () -> { 
+            let ans = hasNext(iter);
+            not ans
+        };
+        let getNext = () -> {
+            let o = next(iter);
+            unmarshalMapEntry(MapEntry(o as ##java.util.Map$Entry))
+        };
+        Iterator(isDone, getNext)
 
 }
