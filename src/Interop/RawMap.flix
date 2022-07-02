@@ -106,4 +106,16 @@ namespace Interop/RawMap {
         };
         Iterator(isDone, getNext)
 
+
+    pub def fromListViaHashMap(r: Region[r], l: List[(k, v)]): RawMap[k, v, r] \ Write(r) with Marshal[k], Marshal[v] =
+        let step = xs -> match xs {
+            case kv :: rs => let (k,v) = kv; Some((k, v, rs))
+            case Nil      => None
+        };
+        unfoldViaHashMap(r, step, l)
+    
+    pub def toList(m: RawMap[k, v, r]): List[(k, v)] \ { Read(r) } with Order[k], Marshal[k], Marshal[v] =
+        let step = (k, entry) -> ks -> k(entry :: ks);
+        foldMap(step, ks -> ks, m) |> f -> f(Nil)
+
 }

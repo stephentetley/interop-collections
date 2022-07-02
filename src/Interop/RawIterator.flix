@@ -51,5 +51,21 @@ namespace Interop/RawIterator {
             Interop/Marshal.fromJavaObject(a1)
         };
         Iterator(isDone, getNext)
-        
+
+    ///
+    /// Apply the effectful function `f` to all the elements in the array `a`.
+    ///
+    pub def foreach(f: a -> Unit & ef, iter: RawIterator[a, r]): Unit \ { ef, Read(r) } with Marshal[a] =
+        iterator(iter) |> Iterator.foreach(f)
+
+    pub def toList(iter: RawIterator[a, r]): List[a] \ Read(r) with Marshal[a] = 
+        iterator(iter) |> Iterator.toList
+
+    pub def toNel(iter: RawIterator[a, r]): Option[Nel[a]] \ Read(r) with Marshal[a] =
+        iterator(iter) |> Iterator.toNel
+
+
+    pub def toMapWith(f: a -> (k, v) & ef, iter: RawIterator[a, r]): Map[k, v] \ { Read(r), ef } with Order[k], Marshal[a] =
+        iterator(iter) |> Iterator.foldLeft((acc, a) -> let (k,v) = f(a); Map.insert(k, v, acc), Map.empty())
+
 }
