@@ -56,7 +56,7 @@ namespace Interop/RawMap {
         (k1, v1)
 
 
-    pub def foldMap(f: (b, (k, v)) -> b & ef, s: b, m: RawMap[k, v, r]): b \ { Read(r), ef} with Order[k], Marshal[k], Marshal[v] = 
+    pub def foldRawMap(f: (b, (k, v)) -> b & ef, s: b, m: RawMap[k, v, r]): b \ { Read(r), ef} with Order[k], Marshal[k], Marshal[v] = 
         region r1 {
             let iter = iterator(r1, m);
             Iterator.foldLeft(f, s, iter)
@@ -85,7 +85,7 @@ namespace Interop/RawMap {
             let (k, v) = entry;
             Map.insert(k, v, acc)
         };
-        foldMap(step, Map.empty(), m)
+        foldRawMap(step, Map.empty(), m)
 
     ///
     /// Returns an iterator over all key-value pairs in `m`.
@@ -118,6 +118,6 @@ namespace Interop/RawMap {
     
     pub def toList(m: RawMap[k, v, r]): List[(k, v)] \ { Read(r) } with Order[k], Marshal[k], Marshal[v] =
         let step = (k, entry) -> ks -> k(entry :: ks);
-        foldMap(step, ks -> ks, m) |> f -> f(Nil)
+        foldRawMap(step, ks -> ks, m) |> f -> f(Nil)
 
 }
