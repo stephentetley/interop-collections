@@ -37,6 +37,8 @@ namespace Interop/RawMap {
         let RawMap(m1) = m;
         m1
 
+    pub def new(prim: ##java.util.Map, _: Region[r]): RawMap[k, v, r] = RawMap(prim)
+
     pub def getRegionOf(_: RawMap[k, v, r]): Region[r] = () as Region[r]
 
     ///

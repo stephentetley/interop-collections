@@ -36,6 +36,8 @@ namespace Interop/RawList {
         m1
 
 
+    pub def new(prim: ##java.util.List, _: Region[r]): RawList[a, r] = RawList(prim)
+
     ///
     /// Returns an iterator over `l`.
     ///
@@ -62,5 +64,20 @@ namespace Interop/RawList {
         loop(st, new1())
 
 
+    pub def fromListViaHashSet(r: Region[r], l: List[a]): RawList[a, r] \ { Write(r) } with Order[a], Marshal[a] =
+        let step = st -> match st {
+            case a :: rs => Some((a, rs))
+            case Nil     => None
+        };
+        unfoldViaArrayList(r, step, l)
+
+
+    pub def toList(l: RawList[a, r]): List[a] \ { Read(r) } with Marshal[a] =
+        let step = (k, a) -> ks -> k(a :: ks);
+        foldRawList(step, ks -> ks, l) |> f -> f(Nil)
+
+    pub def toSet(l: RawList[a, r]): Set[a] \ { Read(r) } with Order[a], Marshal[a] =
+        let step = (acc, a) -> Set.insert(a, acc);
+        foldRawList(step, Set.empty(), l)
 
 }

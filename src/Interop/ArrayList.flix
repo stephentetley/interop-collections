@@ -33,7 +33,12 @@ namespace Interop/ArrayList {
     ///
     /// Returns a new mutable ArrayList.
     ///
-    pub def new(_: Region[r]): ArrayList[a, r] \ Write(r) =
+    pub def new(prim: ##java.util.ArrayList, _: Region[r]): ArrayList[a, r] = ArrayList(prim)
+
+    ///
+    /// Returns a new mutable ArrayList.
+    ///
+    pub def empty(_: Region[r]): ArrayList[a, r] \ Write(r) =
         import new java.util.ArrayList(): ##java.util.ArrayList & r as newArrayList;
         ArrayList(newArrayList())
 
@@ -129,12 +134,12 @@ namespace Interop/ArrayList {
 
     /// asc order?
     pub def fromSet(r: Region[r], s: Set[a]): ArrayList[a, r] \ { Write(r) } with Marshal[a] =
-        let arr = new(r);
+        let arr = empty(r);
         Set.foreach(x -> discard add!(x, arr), s);
         arr
 
     pub def fromArray(r: Region[r1], s: Array[a, r2]): ArrayList[a, r1] \ { Read(r2), Write(r1) } with Marshal[a] =
-        let arr = new(r);
+        let arr = empty(r);
         Array.foreach(x -> discard add!(x, arr), s);
         arr
 

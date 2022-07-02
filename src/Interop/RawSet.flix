@@ -35,6 +35,10 @@ namespace Interop/RawSet {
         let RawSet(m1) = m;
         m1
 
+
+
+    pub def new(prim: ##java.util.Set, _: Region[r]): RawSet[a, r] = RawSet(prim)
+
     ///
     /// Returns an iterator over `s`.
     ///
@@ -81,5 +85,5 @@ namespace Interop/RawSet {
     pub def toList(rs: RawSet[a, r]): List[a] \ { Read(r) } with Marshal[a] =
         let step = (k, a) -> ks -> k(a :: ks);
         foldRawSet(step, ks -> ks, rs) |> f -> f(Nil)
-        
+
 }

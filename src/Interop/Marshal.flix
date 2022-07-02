@@ -145,4 +145,5 @@ namespace Interop/Marshal {
     pub def unmarshalFloat64(d: ##java.lang.Double): Float64 = 
         import java.lang.Double.doubleValue(): Float64 & Pure;
         doubleValue(d)
+        
 }
