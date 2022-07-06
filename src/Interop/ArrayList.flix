@@ -120,7 +120,7 @@ namespace Interop/ArrayList {
             [] @ r1
         else {
             let head = get(0, arr);
-            let aout = Array.new(head, len, r1);
+            let aout = Array.new(r1, head, len);
             let step = (ix, a) -> {aout[ix] = a; ix+1};
             discard foldArrayList(step, 0, arr);
             aout
