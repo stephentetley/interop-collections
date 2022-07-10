@@ -36,7 +36,7 @@ namespace Interop/RawList {
         m1
 
 
-    pub def new(prim: ##java.util.List, _: Region[r]): RawList[a, r] = RawList(prim)
+    pub def new(_: Region[r], prim: ##java.util.List): RawList[a, r] = RawList(prim)
 
     ///
     /// Returns an iterator over `l`.

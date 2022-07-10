@@ -81,7 +81,19 @@ namespace Interop {
         
         pub def fromJavaObject(o: ##java.lang.Object): List[a] = 
             region r1 {
-                Interop/RawList.new(o as ##java.util.List, r1) |> Interop/RawList.toList
+                Interop/RawList.new(r1, o as ##java.util.List) |> Interop/RawList.toList
+            }
+    }
+
+    instance Marshal[Option[a]] with Marshal[a] {
+        pub def toJavaObject(o: Option[a]): ##java.lang.Object =
+            region r1 {
+                Interop/Optional.fromOption(r1, o) as ##java.lang.Object
+            } 
+        
+        pub def fromJavaObject(o: ##java.lang.Object): Option[a] = 
+            region r1 {
+                Interop/Optional.new(r1, o as ##java.util.Optional) |> Interop/Optional.toOption(r1)
             }
     }
 

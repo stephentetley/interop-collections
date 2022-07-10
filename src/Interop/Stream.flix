@@ -65,7 +65,7 @@ namespace Interop/Stream {
 
     use Interop.Marshal;
 
-    pub def new(prim: ##java.util.stream.Stream, _: Region[r]): RawStream[a, r] = RawStream(prim)
+    pub def new(_: Region[r], prim: ##java.util.stream.Stream): RawStream[a, r] = RawStream(prim)
 
     pub def iterator(s: RawStream[a, r]): Iterator[a, r] \ Write(r) with Marshal[a] =
         import java.util.stream.BaseStream.iterator(): ##java.util.Iterator & r;

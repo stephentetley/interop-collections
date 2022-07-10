@@ -37,7 +37,7 @@ namespace Interop/RawSet {
 
 
 
-    pub def new(prim: ##java.util.Set, _: Region[r]): RawSet[a, r] = RawSet(prim)
+    pub def new(_: Region[r], prim: ##java.util.Set): RawSet[a, r] = RawSet(prim)
 
     ///
     /// Returns an iterator over `s`.

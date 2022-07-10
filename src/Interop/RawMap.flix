@@ -37,7 +37,7 @@ namespace Interop/RawMap {
         let RawMap(m1) = m;
         m1
 
-    pub def new(prim: ##java.util.Map, _: Region[r]): RawMap[k, v, r] = RawMap(prim)
+    pub def new(_: Region[r], prim: ##java.util.Map): RawMap[k, v, r] = RawMap(prim)
 
     pub def getRegionOf(_: RawMap[k, v, r]): Region[r] = () as Region[r]
 
@@ -78,7 +78,7 @@ namespace Interop/RawMap {
             case Some(k, v)   => Some((k, v, iter))
             case None         => None
         };
-        unfoldViaHashMap(r, step, Map.toIterator(r, m))
+        unfoldViaHashMap(r, step, Map.iterator(r, m))
 
     pub def toMap(m: RawMap[k, v, r]): Map[k, v] \ { Read(r) } with Order[k], Marshal[k], Marshal[v] =
         let step = (acc, entry) -> {

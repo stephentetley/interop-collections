@@ -37,7 +37,7 @@ namespace Interop/ArrayList {
     ///
     /// Returns a new mutable ArrayList.
     ///
-    pub def new(prim: ##java.util.ArrayList, _: Region[r]): ArrayList[a, r] = ArrayList(prim)
+    pub def new(_: Region[r], prim: ##java.util.ArrayList): ArrayList[a, r] = ArrayList(prim)
 
     ///
     /// Returns a new mutable ArrayList.

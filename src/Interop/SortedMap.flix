@@ -37,7 +37,7 @@ namespace Interop/SortedMap {
         let SortedMap(m1) = m;
         m1
 
-    pub def new(prim: ##java.util.SortedMap, _: Region[r]): SortedMap[k, v, r] = SortedMap(prim)
+    pub def new(_: Region[r], prim: ##java.util.SortedMap): SortedMap[k, v, r] = SortedMap(prim)
 
     pub def getRegionOf(_: SortedMap[k, v, r]): Region[r] = () as Region[r]
 
@@ -64,7 +64,7 @@ namespace Interop/SortedMap {
             case Some(k, v)   => Some((k, v, iter))
             case None         => None
         };
-        unfoldViaTreeMap(r, step, Map.toIterator(r, m))
+        unfoldViaTreeMap(r, step, Map.iterator(r, m))
 
     pub def toMap(m: SortedMap[k, v, r]): Map[k, v] \ { Read(r) } with Order[k], Marshal[k], Marshal[v] =
         let step = (acc, entry) -> {
