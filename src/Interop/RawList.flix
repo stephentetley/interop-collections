@@ -41,7 +41,7 @@ namespace Interop/RawList {
     ///
     /// Returns an iterator over `l`.
     ///
-    pub def iterator(r1: Region[r1], l: RawList[a, r2]): Iterator[a, r1] \ { Read(r2), Read(r1) } with Marshal[a] =
+    pub def iterator(r1: Region[r1], l: RawList[a, r2]): Iterator[a, r1] \ { Read(r2), Write(r1) } with Marshal[a] =
         import java.util.List.iterator(): ##java.util.Iterator & (r2 and r1) as iterator1;
         let RawList(l1) = l;
         Interop/RawIterator.new(r1, iterator1(l1)) |> Interop/RawIterator.iterator

@@ -38,11 +38,13 @@ namespace Interop/Collection {
     pub def new(_: Region[r], iter: ##java.util.Collection): Collection[a, r] \ Write(r) = Collection(iter) as \Write(r)
 
 
-    pub def iterator(r1: Region[r1], c: Collection[a, r2]): Iterator[a, r1] \ { Read(r2), Read(r1) } with Marshal[a] =
+    pub def iterator(r: Region[r1], c: Collection[a, r2]): Iterator[a, r1] \ { Read(r2), Write(r1) } with Marshal[a] =
         import java.util.Collection.iterator(): ##java.util.Iterator & (r2 and r1) as iterator1;
         let Collection(c1) = c;
-        Interop/RawIterator.new(r1, iterator1(c1)) |> Interop/RawIterator.iterator
+        Interop/RawIterator.new(r, iterator1(c1)) |> Interop/RawIterator.iterator
 
+    /// pub def enumerator(r: Region[r1], c: Collection[a, r2]): Iterator[(a, Int32), r] \ { Read(r2), Write(r1) }  with Marshal[a] =
+    ///     iterator(r, c) |> Iterator.enumerator
 
     pub def unfoldCollection(_: Region[r], f: s -> Option[(a, s)] & ef, st: s): Collection[a, r] \ { Write(r),  ef } with Marshal[a] =
         import new java.util.LinkedList(): ##java.util.LinkedList & r as new1;

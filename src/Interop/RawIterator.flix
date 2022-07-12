@@ -35,12 +35,13 @@ namespace Interop/RawIterator {
         let RawIterator(iter1) = iter;
         iter1
 
-    pub def new(_: Region[r], iter: ##java.util.Iterator): RawIterator[a, r] \ Write(r) = RawIterator(iter) as \Write(r)
+    pub def new(_: Region[r], iter: ##java.util.Iterator): RawIterator[a, r] \ Write(r) = 
+        RawIterator(iter) as \ Write(r)
 
-
-    pub def iterator(iter: RawIterator[a, r]): Iterator[a, r] with Marshal[a]  =
-        import java.util.Iterator.hasNext(): Bool & r;
-        import java.util.Iterator.next(): ##java.lang.Object & r;
+    /// Mutable (raw) to mutable (Filx iterator) so Read/Write
+    pub def iterator(iter: RawIterator[a, r]): Iterator[a, r] \ { Read(r), Write(r) } with Marshal[a]  =
+        import java.util.Iterator.hasNext(): Bool \ Read(r);
+        import java.util.Iterator.next(): ##java.lang.Object \ { Write(r) };
         let RawIterator(iter1) = iter;
         let isDone = () -> { 
             let ans = hasNext(iter1);
@@ -50,7 +51,11 @@ namespace Interop/RawIterator {
             let a1 = next(iter1);
             Interop/Marshal.fromJavaObject(a1)
         };
-        Iterator(isDone, getNext)
+        Iterator(isDone, getNext) as \ { Read(r), Write(r) }
+
+
+    pub def enumerator(iter: RawIterator[a, r]): Iterator[(a, Int32), r] \ Write(r) with Marshal[a] =
+        iterator(iter) |> Iterator.enumerator
 
     ///
     /// Apply the effectful function `f` to all the elements in the array `a`.

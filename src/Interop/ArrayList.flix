@@ -84,10 +84,16 @@ namespace Interop/ArrayList {
     ///
     /// Returns an iterator over `arr`.
     ///
-    pub def iterator(r1: Region[r1], arr: ArrayList[a, r2]): Iterator[a, r1] \ { Read(r2), Read(r1) } with Marshal[a] =
+    pub def iterator(r1: Region[r1], arr: ArrayList[a, r2]): Iterator[a, r1] \ { Read(r2), Write(r1) } with Marshal[a] =
         import java.util.ArrayList.iterator(): ##java.util.Iterator & (r2 and r1) as iterator1;
         let ArrayList(arr1) = arr;
         Interop/RawIterator.new(r1, iterator1(arr1)) |> Interop/RawIterator.iterator
+
+    ///
+    /// Returns an iterator over `arr`.
+    ///
+    pub def enumerator(r1: Region[r1], arr: ArrayList[a, r2]): Iterator[(a, Int32), r1] \ { Read(r2), Write(r1) } with Marshal[a] =
+        iterator(r1, arr) |> Iterator.enumerator
 
 
     pub def unfoldArrayList(_: Region[r], f: s -> Option[(a, s)] & ef, st: s): ArrayList[a, r] \ { Write(r),  ef } with Marshal[a] =
