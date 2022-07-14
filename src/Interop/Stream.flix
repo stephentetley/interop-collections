@@ -68,6 +68,9 @@ namespace Interop/Stream {
     pub def new(_: Region[r], prim: ##java.util.stream.Stream): RawStream[a, r] = RawStream(prim)
 
     pub def iterator(s: RawStream[a, r]): Iterator[a, r] \ Write(r) with Marshal[a] =
+        iteratorWith(Interop/Marshal.fromJavaObject, s)
+
+    pub def iteratorWith(ocast: ##java.lang.Object -> a, s: RawStream[a, r]): Iterator[a, r] \ Write(r) with Marshal[a] =
         import java.util.stream.BaseStream.iterator(): ##java.util.Iterator & r;
         import java.util.Iterator.hasNext(): Bool & r;
         import java.util.Iterator.next(): ##java.lang.Object & r;
@@ -79,7 +82,7 @@ namespace Interop/Stream {
         };
         let getNext = () -> {
             let a1 = next(iter1);
-            Interop/Marshal.fromJavaObject(a1)
+            ocast(a1)
         };
         Iterator(isDone, getNext)
 

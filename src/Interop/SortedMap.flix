@@ -75,9 +75,18 @@ namespace Interop/SortedMap {
 
     ///
     /// Returns an iterator over all key-value pairs in `m`.
+    ///
+    pub def iterator(r1: Region[r1], 
+                        m: SortedMap[k, v, r2]): Iterator[(k, v), r1] \ { Read(r2), Write(r1) } with Order[k], Marshal[k], Marshal[v] =
+        iteratorWith(r1, Interop/Marshal.fromJavaObject, Interop/Marshal.fromJavaObject, m)
+    ///
+    /// Returns an iterator over all key-value pairs in `m`.
     /// Can't use RawIterator because no Marshal instance for MapEntry
     ///
-    pub def iterator(_r1: Region[r1], m: SortedMap[k, v, r2]): Iterator[(k, v), r1] \ { Read(r2), Write(r1) } with Order[k], Marshal[k], Marshal[v] =
+    pub def iteratorWith(_r1: Region[r1],
+                            kcast: ##java.lang.Object -> k, 
+                            vcast: ##java.lang.Object -> v,  
+                            m: SortedMap[k, v, r2]): Iterator[(k, v), r1] \ { Read(r2), Write(r1) } with Order[k], Marshal[k], Marshal[v] =
         import java.util.SortedMap.entrySet(): ##java.util.Set & r2;
         import java.util.Set.iterator(): ##java.util.Iterator & (r2 and r1);
         import java.util.Iterator.hasNext(): Bool & r1;
@@ -90,7 +99,7 @@ namespace Interop/SortedMap {
         };
         let getNext = () -> {
             let o = next(iter);
-            Interop/RawMap.unmarshalMapEntry(MapEntry(o as ##java.util.Map$Entry))
+            Interop/RawMap.unmarshalMapEntryWith(kcast, vcast, MapEntry(o as ##java.util.Map$Entry))
         };
         Iterator(isDone, getNext)
 

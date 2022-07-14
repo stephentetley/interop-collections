@@ -40,6 +40,11 @@ namespace Interop/RawIterator {
 
     /// Mutable (raw) to mutable (Filx iterator) so Read/Write
     pub def iterator(iter: RawIterator[a, r]): Iterator[a, r] \ { Read(r), Write(r) } with Marshal[a]  =
+        iteratorWith(Interop/Marshal.fromJavaObject, iter)
+        
+
+    /// iteratorWith ???
+    pub def iteratorWith(ocast: ##java.lang.Object -> a, iter: RawIterator[a, r]): Iterator[a, r] \ { Read(r), Write(r) }   =
         import java.util.Iterator.hasNext(): Bool \ Read(r);
         import java.util.Iterator.next(): ##java.lang.Object \ { Write(r) };
         let RawIterator(iter1) = iter;
@@ -49,10 +54,9 @@ namespace Interop/RawIterator {
         };
         let getNext = () -> {
             let a1 = next(iter1);
-            Interop/Marshal.fromJavaObject(a1)
+            ocast(a1)
         };
         Iterator(isDone, getNext) as \ { Read(r), Write(r) }
-
 
     pub def enumerator(iter: RawIterator[a, r]): Iterator[(a, Int32), r] \ Write(r) with Marshal[a] =
         iterator(iter) |> Iterator.enumerator

@@ -42,9 +42,14 @@ namespace Interop/RawList {
     /// Returns an iterator over `l`.
     ///
     pub def iterator(r1: Region[r1], l: RawList[a, r2]): Iterator[a, r1] \ { Read(r2), Write(r1) } with Marshal[a] =
+        iteratorWith(r1, Interop/Marshal.fromJavaObject, l)
+    ///
+    /// Returns an iterator over `l`.
+    ///
+    pub def iteratorWith(r1: Region[r1], ocast: ##java.lang.Object -> a, l: RawList[a, r2]): Iterator[a, r1] \ { Read(r2), Write(r1) } =
         import java.util.List.iterator(): ##java.util.Iterator & (r2 and r1) as iterator1;
         let RawList(l1) = l;
-        Interop/RawIterator.new(r1, iterator1(l1)) |> Interop/RawIterator.iterator
+        Interop/RawIterator.new(r1, iterator1(l1)) |> Interop/RawIterator.iteratorWith(ocast)
 
 
     pub def foldRawList(f: (b, a) -> b & ef, s: b, l: RawList[a, r]): b \ { Read(r), ef } with Marshal[a] =

@@ -43,9 +43,16 @@ namespace Interop/RawSet {
     /// Returns an iterator over `s`.
     ///
     pub def iterator(r1: Region[r1], s: RawSet[a, r2]): Iterator[a, r1] \ { Read(r2), Read(r1) } with Marshal[a] =
+        iteratorWith(r1, Interop/Marshal.fromJavaObject, s)
+    ///
+    /// Returns an iterator over `s`.
+    ///
+    pub def iteratorWith(r1: Region[r1], 
+                            ocast: ##java.lang.Object -> a, 
+                            s: RawSet[a, r2]): Iterator[a, r1] \ { Read(r2), Read(r1) } with Marshal[a] =
         import java.util.Set.iterator(): ##java.util.Iterator & (r2 and r1) as iterator1;
         let RawSet(s1) = s;
-        Interop/RawIterator.new(r1, iterator1(s1)) |> Interop/RawIterator.iterator
+        Interop/RawIterator.new(r1, iterator1(s1)) |> Interop/RawIterator.iteratorWith(ocast)
 
     pub def foldRawSet(f: (b, a) -> b & ef, s: b, rs: RawSet[a, r]): b \ { Read(r), ef } with Marshal[a] =
         region r1 {

@@ -39,9 +39,14 @@ namespace Interop/Collection {
 
 
     pub def iterator(r: Region[r1], c: Collection[a, r2]): Iterator[a, r1] \ { Read(r2), Write(r1) } with Marshal[a] =
+        iteratorWith(r, Interop/Marshal.fromJavaObject, c)
+        
+    pub def iteratorWith(r: Region[r1], 
+                            ocast: ##java.lang.Object -> a,
+                            c: Collection[a, r2]): Iterator[a, r1] \ { Read(r2), Write(r1) } with Marshal[a] =
         import java.util.Collection.iterator(): ##java.util.Iterator & (r2 and r1) as iterator1;
         let Collection(c1) = c;
-        Interop/RawIterator.new(r, iterator1(c1)) |> Interop/RawIterator.iterator
+        Interop/RawIterator.new(r, iterator1(c1)) |> Interop/RawIterator.iteratorWith(ocast)
 
     /// pub def enumerator(r: Region[r1], c: Collection[a, r2]): Iterator[(a, Int32), r] \ { Read(r2), Write(r1) }  with Marshal[a] =
     ///     iterator(r, c) |> Iterator.enumerator

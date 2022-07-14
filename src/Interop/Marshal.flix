@@ -16,6 +16,13 @@
 
 namespace Interop {
 
+
+    // TODO 
+    // There is a good case for having a singleton method toJavaObject class
+    // and a toJavaObject / fromJavaObject class. It is common to see enums
+    // that are used as arguments but are never returned in Java API's
+
+
     pub class Marshal[a] {
         pub def toJavaObject(x: a): ##java.lang.Object
 
