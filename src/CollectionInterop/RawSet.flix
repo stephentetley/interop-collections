@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Interop {
+namespace CollectionInterop {
 
     ///
     /// Represents a Java Set.
@@ -24,11 +24,11 @@ namespace Interop {
 
 }
 
-namespace Interop/RawSet {
+namespace CollectionInterop/RawSet {
 
-    use Interop.RawSet;
-    use Interop.RawSet.{RawSet};
-    use Interop.Marshal;
+    use CollectionInterop.RawSet;
+    use CollectionInterop.RawSet.{RawSet};
+    use CollectionInterop.Marshal;
 
 
     pub def getRawSet(m: RawSet[a, r]): ##java.util.Set = 
@@ -43,7 +43,8 @@ namespace Interop/RawSet {
     /// Returns an iterator over `s`.
     ///
     pub def iterator(r1: Region[r1], s: RawSet[a, r2]): Iterator[a, r1] \ { Read(r2), Read(r1) } with Marshal[a] =
-        iteratorWith(r1, Interop/Marshal.fromJavaObject, s)
+        iteratorWith(r1, CollectionInterop/Marshal.fromJavaObject, s)
+
     ///
     /// Returns an iterator over `s`.
     ///
@@ -52,7 +53,7 @@ namespace Interop/RawSet {
                             s: RawSet[a, r2]): Iterator[a, r1] \ { Read(r2), Read(r1) } with Marshal[a] =
         import java.util.Set.iterator(): ##java.util.Iterator & (r2 and r1) as iterator1;
         let RawSet(s1) = s;
-        Interop/RawIterator.new(r1, iterator1(s1)) |> Interop/RawIterator.iteratorWith(ocast)
+        CollectionInterop/RawIterator.new(r1, iterator1(s1)) |> CollectionInterop/RawIterator.iteratorWith(ocast)
 
     pub def foldRawSet(f: (b, a) -> b & ef, s: b, rs: RawSet[a, r]): b \ { Read(r), ef } with Marshal[a] =
         region r1 {
@@ -65,7 +66,7 @@ namespace Interop/RawSet {
         import java.util.HashSet.add(##java.lang.Object): Bool & r as put; 
         def loop(st1, ac) = match f(st1) {
             case None           => RawSet(ac as ##java.util.Set)
-            case Some((a, st2)) => { discard put(ac, Interop/Marshal.toJavaObject(a)); loop(st2, ac) }
+            case Some((a, st2)) => { discard put(ac, CollectionInterop/Marshal.toJavaObject(a)); loop(st2, ac) }
         };
         loop(st, newHashSet())
 
@@ -74,7 +75,7 @@ namespace Interop/RawSet {
         import new java.util.HashSet(): ##java.util.HashSet & r as newHashSet;
         import java.util.HashSet.add(##java.lang.Object): Bool & r as put;
         let s1 = newHashSet();
-        Set.foreach(a -> discard put(s1, Interop/Marshal.toJavaObject(a)), s);
+        Set.foreach(a -> discard put(s1, CollectionInterop/Marshal.toJavaObject(a)), s);
         RawSet(s1 as ##java.util.Set)
 
     pub def toSet(rs: RawSet[a, r]): Set[a] \ { Read(r) } with Order[a], Marshal[a] =

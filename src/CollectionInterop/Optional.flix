@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Interop {
+namespace CollectionInterop {
 
     ///
     /// Represents a Java Optional.
@@ -29,11 +29,11 @@ namespace Interop {
 }
 
 
-namespace Interop/Optional {
+namespace CollectionInterop/Optional {
     
-    use Interop.Optional;
-    use Interop.Optional.{Optional};
-    use Interop.Marshal;
+    use CollectionInterop.Optional;
+    use CollectionInterop.Optional.{Optional};
+    use CollectionInterop.Marshal;
 
     pub def getOptional(o: Optional[a, r]): ##java.util.Optional = 
         let Optional(o1) = o;
@@ -48,7 +48,7 @@ namespace Interop/Optional {
         import java.util.Optional.get(): ##java.lang.Object & r;
         let Optional(o1) = o;
         if (isPresent(o1))
-            get(o1) |> Interop/Marshal.fromJavaObject |> Some
+            get(o1) |> CollectionInterop/Marshal.fromJavaObject |> Some
         else 
             None
     
@@ -57,7 +57,7 @@ namespace Interop/Optional {
         import static java.util.Optional.of(##java.lang.Object): ##java.util.Optional & r;
         match o { 
             case None    => empty() |> Optional
-            case Some(a) => Interop/Marshal.toJavaObject(a) |> of |> Optional
+            case Some(a) => CollectionInterop/Marshal.toJavaObject(a) |> of |> Optional
         }
 
 }

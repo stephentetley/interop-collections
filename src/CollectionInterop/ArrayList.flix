@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Interop {
+namespace CollectionInterop {
 
     ///
     /// Represents a ArrayList.
@@ -23,11 +23,11 @@ namespace Interop {
 
 }
 
-namespace Interop/ArrayList {
+namespace CollectionInterop/ArrayList {
 
-    use Interop.ArrayList;
-    use Interop.ArrayList.{ArrayList};
-    use Interop.Marshal;
+    use CollectionInterop.ArrayList;
+    use CollectionInterop.ArrayList.{ArrayList};
+    use CollectionInterop.Marshal;
 
     
     pub def getArrayList(arr: ArrayList[a, r]): ##java.util.ArrayList = 
@@ -57,12 +57,12 @@ namespace Interop/ArrayList {
     pub def get(ix: Int32, arr: ArrayList[a, r]): a \ Read(r) with Marshal[a] = 
         import java.util.ArrayList.get(Int32): ##java.lang.Object & r;
         let ArrayList(arr1) = arr;
-        get(arr1, ix) |> Interop/Marshal.fromJavaObject
+        get(arr1, ix) |> CollectionInterop/Marshal.fromJavaObject
 
     pub def add!(x: a, arr: ArrayList[a, r]): Bool \ { Write(r) } with Marshal[a] = 
         import java.util.ArrayList.add(##java.lang.Object): Bool & r;
         let ArrayList(arr1) = arr;
-        add(arr1, Interop/Marshal.toJavaObject(x))
+        add(arr1, CollectionInterop/Marshal.toJavaObject(x))
 
     ///
     /// Apply the effectful function `f` to all the elements in the array `a`.
@@ -85,7 +85,7 @@ namespace Interop/ArrayList {
     /// Returns an iterator over `arr`.
     ///
     pub def iterator(r1: Region[r1], arr: ArrayList[a, r2]): Iterator[a, r1] \ { Read(r2), Write(r1) } with Marshal[a] =
-        iteratorWith(r1, Interop/Marshal.fromJavaObject, arr)
+        iteratorWith(r1, CollectionInterop/Marshal.fromJavaObject, arr)
 
     ///
     /// Returns an iterator over `arr`.
@@ -95,7 +95,7 @@ namespace Interop/ArrayList {
                             arr: ArrayList[a, r2]): Iterator[a, r1] \ { Read(r2), Write(r1) } =
         import java.util.ArrayList.iterator(): ##java.util.Iterator & (r2 and r1) as iterator1;
         let ArrayList(arr1) = arr;
-        Interop/RawIterator.new(r1, iterator1(arr1)) |> Interop/RawIterator.iteratorWith(ocast)
+        CollectionInterop/RawIterator.new(r1, iterator1(arr1)) |> CollectionInterop/RawIterator.iteratorWith(ocast)
 
 
 
@@ -111,7 +111,7 @@ namespace Interop/ArrayList {
         import java.util.ArrayList.add(##java.lang.Object): Bool & r as add1;
         def loop(st1, acc) = match f(st1) {
             case None         => ArrayList(acc)
-            case Some(o, st2) => {discard add1(acc, Interop/Marshal.toJavaObject(o)); loop(st2, acc)}
+            case Some(o, st2) => {discard add1(acc, CollectionInterop/Marshal.toJavaObject(o)); loop(st2, acc)}
         };
         loop(st, new1())
 

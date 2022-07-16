@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Interop {
+namespace CollectionInterop {
 
 
     // TODO 
@@ -36,33 +36,33 @@ namespace Interop {
     }
 
     instance Marshal[Bool] {
-        pub def toJavaObject(x: Bool): ##java.lang.Object = Interop/Marshal.marshalBool(x) as ##java.lang.Object
-        pub def fromJavaObject(o: ##java.lang.Object): Bool = Interop/Marshal.unmarshalBool(o as ##java.lang.Boolean)
+        pub def toJavaObject(x: Bool): ##java.lang.Object = CollectionInterop/Marshal.marshalBool(x) as ##java.lang.Object
+        pub def fromJavaObject(o: ##java.lang.Object): Bool = CollectionInterop/Marshal.unmarshalBool(o as ##java.lang.Boolean)
     }
 
     instance Marshal[Char] {
-        pub def toJavaObject(x: Char): ##java.lang.Object = Interop/Marshal.marshalChar(x) as ##java.lang.Object
-        pub def fromJavaObject(o: ##java.lang.Object): Char = Interop/Marshal.unmarshalChar(o as ##java.lang.Character)
+        pub def toJavaObject(x: Char): ##java.lang.Object = CollectionInterop/Marshal.marshalChar(x) as ##java.lang.Object
+        pub def fromJavaObject(o: ##java.lang.Object): Char = CollectionInterop/Marshal.unmarshalChar(o as ##java.lang.Character)
     }
 
     instance Marshal[Int8] {
-        pub def toJavaObject(x: Int8): ##java.lang.Object = Interop/Marshal.marshalInt8(x) as ##java.lang.Object
-        pub def fromJavaObject(o: ##java.lang.Object): Int8 = Interop/Marshal.unmarshalInt8(o as ##java.lang.Byte)
+        pub def toJavaObject(x: Int8): ##java.lang.Object = CollectionInterop/Marshal.marshalInt8(x) as ##java.lang.Object
+        pub def fromJavaObject(o: ##java.lang.Object): Int8 = CollectionInterop/Marshal.unmarshalInt8(o as ##java.lang.Byte)
     }
 
     instance Marshal[Int16] {
-        pub def toJavaObject(x: Int16): ##java.lang.Object = Interop/Marshal.marshalInt16(x) as ##java.lang.Object
-        pub def fromJavaObject(o: ##java.lang.Object): Int16 = Interop/Marshal.unmarshalInt16(o as ##java.lang.Short)
+        pub def toJavaObject(x: Int16): ##java.lang.Object = CollectionInterop/Marshal.marshalInt16(x) as ##java.lang.Object
+        pub def fromJavaObject(o: ##java.lang.Object): Int16 = CollectionInterop/Marshal.unmarshalInt16(o as ##java.lang.Short)
     }
 
     instance Marshal[Int32] {
-        pub def toJavaObject(x: Int32): ##java.lang.Object = Interop/Marshal.marshalInt32(x) as ##java.lang.Object
-        pub def fromJavaObject(o: ##java.lang.Object): Int32 = Interop/Marshal.unmarshalInt32(o as ##java.lang.Integer)
+        pub def toJavaObject(x: Int32): ##java.lang.Object = CollectionInterop/Marshal.marshalInt32(x) as ##java.lang.Object
+        pub def fromJavaObject(o: ##java.lang.Object): Int32 = CollectionInterop/Marshal.unmarshalInt32(o as ##java.lang.Integer)
     }
     
     instance Marshal[Int64] {
-        pub def toJavaObject(x: Int64): ##java.lang.Object = Interop/Marshal.marshalInt64(x) as ##java.lang.Object
-        pub def fromJavaObject(o: ##java.lang.Object): Int64 = Interop/Marshal.unmarshalInt64(o as ##java.lang.Long)
+        pub def toJavaObject(x: Int64): ##java.lang.Object = CollectionInterop/Marshal.marshalInt64(x) as ##java.lang.Object
+        pub def fromJavaObject(o: ##java.lang.Object): Int64 = CollectionInterop/Marshal.unmarshalInt64(o as ##java.lang.Long)
     }
 
     instance Marshal[BigInt] {
@@ -71,43 +71,43 @@ namespace Interop {
     }
 
     instance Marshal[Float32] {
-        pub def toJavaObject(x: Float32): ##java.lang.Object = Interop/Marshal.marshalFloat32(x) as ##java.lang.Object
-        pub def fromJavaObject(o: ##java.lang.Object): Float32 = Interop/Marshal.unmarshalFloat32(o as ##java.lang.Float)
+        pub def toJavaObject(x: Float32): ##java.lang.Object = CollectionInterop/Marshal.marshalFloat32(x) as ##java.lang.Object
+        pub def fromJavaObject(o: ##java.lang.Object): Float32 = CollectionInterop/Marshal.unmarshalFloat32(o as ##java.lang.Float)
     }
 
     instance Marshal[Float64] {
-        pub def toJavaObject(x: Float64): ##java.lang.Object = Interop/Marshal.marshalFloat64(x) as ##java.lang.Object
-        pub def fromJavaObject(o: ##java.lang.Object): Float64 = Interop/Marshal.unmarshalFloat64(o as ##java.lang.Double)
+        pub def toJavaObject(x: Float64): ##java.lang.Object = CollectionInterop/Marshal.marshalFloat64(x) as ##java.lang.Object
+        pub def fromJavaObject(o: ##java.lang.Object): Float64 = CollectionInterop/Marshal.unmarshalFloat64(o as ##java.lang.Double)
     }
 
     instance Marshal[List[a]] with Marshal[a] {
         pub def toJavaObject(l: List[a]): ##java.lang.Object =
             region r1 {
-                Interop/RawList.fromListViaArrayList(r1, l) as ##java.lang.Object
+                CollectionInterop/RawList.fromListViaArrayList(r1, l) as ##java.lang.Object
             } 
         
         pub def fromJavaObject(o: ##java.lang.Object): List[a] = 
             region r1 {
-                Interop/RawList.new(r1, o as ##java.util.List) |> Interop/RawList.toList
+                CollectionInterop/RawList.new(r1, o as ##java.util.List) |> CollectionInterop/RawList.toList
             }
     }
 
     instance Marshal[Option[a]] with Marshal[a] {
         pub def toJavaObject(o: Option[a]): ##java.lang.Object =
             region r1 {
-                Interop/Optional.fromOption(r1, o) as ##java.lang.Object
+                CollectionInterop/Optional.fromOption(r1, o) as ##java.lang.Object
             } 
         
         pub def fromJavaObject(o: ##java.lang.Object): Option[a] = 
             region r1 {
-                Interop/Optional.new(r1, o as ##java.util.Optional) |> Interop/Optional.toOption(r1)
+                CollectionInterop/Optional.new(r1, o as ##java.util.Optional) |> CollectionInterop/Optional.toOption(r1)
             }
     }
 
 }
 
 
-namespace Interop/Marshal {
+namespace CollectionInterop/Marshal {
 
 
     pub def marshalBool(b: Bool): ##java.lang.Boolean = 

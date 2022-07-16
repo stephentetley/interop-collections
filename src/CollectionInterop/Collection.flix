@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Interop {
+namespace CollectionInterop {
 
     ///
     /// Represents a Java Iterator.
@@ -24,11 +24,11 @@ namespace Interop {
 
 }
 
-namespace Interop/Collection {
+namespace CollectionInterop/Collection {
 
-    use Interop.Collection;
-    use Interop.Collection.{Collection};
-    use Interop.Marshal;
+    use CollectionInterop.Collection;
+    use CollectionInterop.Collection.{Collection};
+    use CollectionInterop.Marshal;
 
 
     pub def getCollection(iter: Collection[a, r]): ##java.util.Collection = 
@@ -39,14 +39,14 @@ namespace Interop/Collection {
 
 
     pub def iterator(r: Region[r1], c: Collection[a, r2]): Iterator[a, r1] \ { Read(r2), Write(r1) } with Marshal[a] =
-        iteratorWith(r, Interop/Marshal.fromJavaObject, c)
+        iteratorWith(r, CollectionInterop/Marshal.fromJavaObject, c)
         
     pub def iteratorWith(r: Region[r1], 
                             ocast: ##java.lang.Object -> a,
                             c: Collection[a, r2]): Iterator[a, r1] \ { Read(r2), Write(r1) } with Marshal[a] =
         import java.util.Collection.iterator(): ##java.util.Iterator & (r2 and r1) as iterator1;
         let Collection(c1) = c;
-        Interop/RawIterator.new(r, iterator1(c1)) |> Interop/RawIterator.iteratorWith(ocast)
+        CollectionInterop/RawIterator.new(r, iterator1(c1)) |> CollectionInterop/RawIterator.iteratorWith(ocast)
 
     /// pub def enumerator(r: Region[r1], c: Collection[a, r2]): Iterator[(a, Int32), r] \ { Read(r2), Write(r1) }  with Marshal[a] =
     ///     iterator(r, c) |> Iterator.enumerator
@@ -56,7 +56,7 @@ namespace Interop/Collection {
         import java.util.LinkedList.add(##java.lang.Object): Bool & r as add1;
         def loop(st1, acc) = match f(st1) {
             case None         => Collection(acc as ##java.util.Collection)
-            case Some(o, st2) => {discard add1(acc, Interop/Marshal.toJavaObject(o)); loop(st2, acc)}
+            case Some(o, st2) => {discard add1(acc, CollectionInterop/Marshal.toJavaObject(o)); loop(st2, acc)}
         };
         loop(st, new1())
 

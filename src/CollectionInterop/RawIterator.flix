@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace Interop {
+namespace CollectionInterop {
 
     ///
     /// Represents a Java Iterator.
@@ -24,11 +24,11 @@ namespace Interop {
 
 }
 
-namespace Interop/RawIterator {
+namespace CollectionInterop/RawIterator {
 
-    use Interop.RawIterator;
-    use Interop.RawIterator.{RawIterator};
-    use Interop.Marshal;
+    use CollectionInterop.RawIterator;
+    use CollectionInterop.RawIterator.{RawIterator};
+    use CollectionInterop.Marshal;
 
 
     pub def getRawIterator(iter: RawIterator[a, r]): ##java.util.Iterator = 
@@ -40,7 +40,7 @@ namespace Interop/RawIterator {
 
     /// Mutable (raw) to mutable (Filx iterator) so Read/Write
     pub def iterator(iter: RawIterator[a, r]): Iterator[a, r] \ { Read(r), Write(r) } with Marshal[a]  =
-        iteratorWith(Interop/Marshal.fromJavaObject, iter)
+        iteratorWith(CollectionInterop/Marshal.fromJavaObject, iter)
         
 
     /// iteratorWith ???
