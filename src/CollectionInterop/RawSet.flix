@@ -82,7 +82,8 @@ namespace CollectionInterop/RawSet {
         let step = (acc, a) -> Set.insert(a, acc);
         foldRawSet(step, Set.empty(), rs)
 
-    pub def fromListViaHashSet(r: Region[r], l: List[a]): RawSet[a, r] \ { Write(r) } with Order[a], Marshal[a] =
+    /// Shouldn't need Order instance in Flix but must be hashable in Java...
+    pub def fromListViaHashSet(r: Region[r], l: List[a]): RawSet[a, r] \ { Write(r) } with Marshal[a] =
         let step = st -> match st {
             case a :: rs => Some((a, rs))
             case Nil     => None
