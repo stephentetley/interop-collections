@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace CollectionInterop {
+namespace Interop/Collections {
 
     ///
     /// Represents a Java SortedMap.
@@ -24,13 +24,13 @@ namespace CollectionInterop {
 
 }
 
-namespace CollectionInterop/SortedMap {
+namespace Interop/Collections/SortedMap {
 
-    use CollectionInterop.SortedMap;
-    use CollectionInterop.SortedMap.{SortedMap};
-    use CollectionInterop/RawMap.MapEntry;
-    use CollectionInterop/RawMap.MapEntry.{MapEntry};
-    use CollectionInterop.Marshal;
+    use Interop/Collections.SortedMap;
+    use Interop/Collections.SortedMap.{SortedMap};
+    use Interop/Collections/RawMap.MapEntry;
+    use Interop/Collections/RawMap.MapEntry.{MapEntry};
+    use Interop/Collections.Marshal;
 
 
     pub def getSortedMap(m: SortedMap[k, v, r]): ##java.util.SortedMap = 
@@ -55,7 +55,7 @@ namespace CollectionInterop/SortedMap {
         import java.util.TreeMap.put(##java.lang.Object, ##java.lang.Object): ##java.lang.Object & r as put; 
         def loop(st1, ac) = match f(st1) {
             case None            => SortedMap(ac as ##java.util.SortedMap)
-            case Some(k, v, st2) => { discard put(ac, CollectionInterop/Marshal.toJavaObject(k), CollectionInterop/Marshal.toJavaObject(v)); loop(st2, ac) }
+            case Some(k, v, st2) => { discard put(ac, Interop/Collections/Marshal.toJavaObject(k), Interop/Collections/Marshal.toJavaObject(v)); loop(st2, ac) }
         };
         loop(st, newTreeMap())
 
@@ -78,7 +78,7 @@ namespace CollectionInterop/SortedMap {
     ///
     pub def iterator(r1: Region[r1], 
                         m: SortedMap[k, v, r2]): Iterator[(k, v), r1] \ { Read(r2), Write(r1) } with Order[k], Marshal[k], Marshal[v] =
-        iteratorWith(r1, CollectionInterop/Marshal.fromJavaObject, CollectionInterop/Marshal.fromJavaObject, m)
+        iteratorWith(r1, Interop/Collections/Marshal.fromJavaObject, Interop/Collections/Marshal.fromJavaObject, m)
     ///
     /// Returns an iterator over all key-value pairs in `m`.
     /// Can't use RawIterator because no Marshal instance for MapEntry
@@ -99,7 +99,7 @@ namespace CollectionInterop/SortedMap {
         };
         let getNext = () -> {
             let o = next(iter);
-            CollectionInterop/RawMap.unmarshalMapEntryWith(kcast, vcast, MapEntry(o as ##java.util.Map$Entry))
+            Interop/Collections/RawMap.unmarshalMapEntryWith(kcast, vcast, MapEntry(o as ##java.util.Map$Entry))
         };
         Iterator(isDone, getNext)
 

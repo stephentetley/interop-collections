@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace CollectionInterop {
+namespace Interop/Collections {
 
     ///
     /// Represents a Java List.
@@ -24,11 +24,11 @@ namespace CollectionInterop {
 
 }
 
-namespace CollectionInterop/RawList {
+namespace Interop/Collections/RawList {
 
-    use CollectionInterop.RawList;
-    use CollectionInterop.RawList.{RawList};
-    use CollectionInterop.Marshal;
+    use Interop/Collections.RawList;
+    use Interop/Collections.RawList.{RawList};
+    use Interop/Collections.Marshal;
 
 
     pub def getRawList(m: RawList[a, r]): ##java.util.List = 
@@ -42,14 +42,14 @@ namespace CollectionInterop/RawList {
     /// Returns an iterator over `l`.
     ///
     pub def iterator(r1: Region[r1], l: RawList[a, r2]): Iterator[a, r1] \ { Read(r2), Write(r1) } with Marshal[a] =
-        iteratorWith(r1, CollectionInterop/Marshal.fromJavaObject, l)
+        iteratorWith(r1, Interop/Collections/Marshal.fromJavaObject, l)
     ///
     /// Returns an iterator over `l`.
     ///
     pub def iteratorWith(r1: Region[r1], ocast: ##java.lang.Object -> a, l: RawList[a, r2]): Iterator[a, r1] \ { Read(r2), Write(r1) } =
         import java.util.List.iterator(): ##java.util.Iterator & (r2 and r1) as iterator1;
         let RawList(l1) = l;
-        CollectionInterop/RawIterator.new(r1, iterator1(l1)) |> CollectionInterop/RawIterator.iteratorWith(ocast)
+        Interop/Collections/RawIterator.new(r1, iterator1(l1)) |> Interop/Collections/RawIterator.iteratorWith(ocast)
 
 
     pub def foldRawList(f: (b, a) -> b & ef, s: b, l: RawList[a, r]): b \ { Read(r), ef } with Marshal[a] =
@@ -64,7 +64,7 @@ namespace CollectionInterop/RawList {
         import java.util.ArrayList.add(##java.lang.Object): Bool & r as add1;
         def loop(st1, acc) = match f(st1) {
             case None         => RawList(acc as ##java.util.List)
-            case Some(o, st2) => {discard add1(acc, CollectionInterop/Marshal.toJavaObject(o)); loop(st2, acc)}
+            case Some(o, st2) => {discard add1(acc, Interop/Collections/Marshal.toJavaObject(o)); loop(st2, acc)}
         };
         loop(st, new1())
 

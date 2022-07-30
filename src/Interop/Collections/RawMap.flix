@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace CollectionInterop {
+namespace Interop/Collections {
 
     ///
     /// Represents a Java Map.
@@ -24,11 +24,11 @@ namespace CollectionInterop {
 
 }
 
-namespace CollectionInterop/RawMap {
+namespace Interop/Collections/RawMap {
 
-    use CollectionInterop.RawMap;
-    use CollectionInterop.RawMap.{RawMap};
-    use CollectionInterop.Marshal;
+    use Interop/Collections.RawMap;
+    use Interop/Collections.RawMap.{RawMap};
+    use Interop/Collections.Marshal;
 
     pub enum MapEntry[_k: Type, _v: Type, _: Region](##java.util.Map$Entry)
 
@@ -47,7 +47,7 @@ namespace CollectionInterop/RawMap {
     /// so we never need to create a MapEntry.
     ///
     pub def unmarshalMapEntry(entry: MapEntry[k, v, r]): (k, v) \ Read(r) with Marshal[k], Marshal[v] =
-        unmarshalMapEntryWith(CollectionInterop/Marshal.fromJavaObject, CollectionInterop/Marshal.fromJavaObject, entry)
+        unmarshalMapEntryWith(Interop/Collections/Marshal.fromJavaObject, Interop/Collections/Marshal.fromJavaObject, entry)
 
     pub def unmarshalMapEntryWith(kcast:  ##java.lang.Object -> k, 
                                     vcast: ##java.lang.Object -> v,
@@ -75,7 +75,7 @@ namespace CollectionInterop/RawMap {
         import java.util.HashMap.put(##java.lang.Object, ##java.lang.Object): ##java.lang.Object & r as put; 
         def loop(st1, ac) = match f(st1) {
             case None            => RawMap(ac as ##java.util.Map)
-            case Some(k, v, st2) => { discard put(ac, CollectionInterop/Marshal.toJavaObject(k), CollectionInterop/Marshal.toJavaObject(v)); loop(st2, ac) }
+            case Some(k, v, st2) => { discard put(ac, Interop/Collections/Marshal.toJavaObject(k), Interop/Collections/Marshal.toJavaObject(v)); loop(st2, ac) }
         };
         loop(st, newHashMap())
 
@@ -98,7 +98,7 @@ namespace CollectionInterop/RawMap {
     /// Can't use RawIterator because no Marshal instance for MapEntry
     ///
     pub def iterator(r1: Region[r1], m: RawMap[k, v, r2]): Iterator[(k, v), r1] \ { Read(r2), Write(r1) } with Order[k], Marshal[k], Marshal[v] =
-        iteratorWith(r1, CollectionInterop/Marshal.fromJavaObject, CollectionInterop/Marshal.fromJavaObject, m)
+        iteratorWith(r1, Interop/Collections/Marshal.fromJavaObject, Interop/Collections/Marshal.fromJavaObject, m)
 
     ///
     /// Returns an iterator over all key-value pairs in `m`.

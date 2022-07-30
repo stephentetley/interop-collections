@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace CollectionInterop {
+namespace Interop/Collections {
 
     ///
     /// Represents a Java Stream.
@@ -51,24 +51,23 @@ namespace CollectionInterop {
 }
 
 
-namespace CollectionInterop/Stream {
+namespace Interop/Collections/Stream {
     
-    use CollectionInterop.RawStream;
-    use CollectionInterop.RawStream.{RawStream};
-    use CollectionInterop.IntStream;
-    use CollectionInterop.IntStream.{IntStream};
-    use CollectionInterop.LongStream;
-    use CollectionInterop.LongStream.{LongStream};
-    use CollectionInterop.DoubleStream;
-    use CollectionInterop.DoubleStream.{DoubleStream};
+    use Interop/Collections.RawStream;
+    use Interop/Collections.RawStream.{RawStream};
+    use Interop/Collections.IntStream;
+    use Interop/Collections.IntStream.{IntStream};
+    use Interop/Collections.LongStream;
+    use Interop/Collections.LongStream.{LongStream};
+    use Interop/Collections.DoubleStream;
+    use Interop/Collections.DoubleStream.{DoubleStream};
     
-
-    use CollectionInterop.Marshal;
+    use Interop/Collections.Marshal;
 
     pub def new(_: Region[r], prim: ##java.util.stream.Stream): RawStream[a, r] = RawStream(prim)
 
     pub def iterator(s: RawStream[a, r]): Iterator[a, r] \ Write(r) with Marshal[a] =
-        iteratorWith(CollectionInterop/Marshal.fromJavaObject, s)
+        iteratorWith(Interop/Collections/Marshal.fromJavaObject, s)
 
     pub def iteratorWith(ocast: ##java.lang.Object -> a, s: RawStream[a, r]): Iterator[a, r] \ Write(r) with Marshal[a] =
         import java.util.stream.BaseStream.iterator(): ##java.util.Iterator & r;
@@ -94,8 +93,8 @@ namespace CollectionInterop/Stream {
         let r = Scoped.regionOf(s);
         let IntStream(s1) = s;
         let iter1 = iterator(s1 as ##java.util.stream.BaseStream);
-        let iter2 = CollectionInterop/RawIterator.new(r, iter1);
-        CollectionInterop/RawIterator.iterator(iter2)
+        let iter2 = Interop/Collections/RawIterator.new(r, iter1);
+        Interop/Collections/RawIterator.iterator(iter2)
 
     pub def newLongStream(_: Region[r], prim: ##java.util.stream.LongStream): LongStream[r] = LongStream(prim)
 
@@ -104,8 +103,8 @@ namespace CollectionInterop/Stream {
         let r = Scoped.regionOf(s);
         let LongStream(s1) = s;
         let iter1 = iterator(s1 as ##java.util.stream.BaseStream);
-        let iter2 = CollectionInterop/RawIterator.new(r, iter1);
-        CollectionInterop/RawIterator.iterator(iter2)
+        let iter2 = Interop/Collections/RawIterator.new(r, iter1);
+        Interop/Collections/RawIterator.iterator(iter2)
 
     pub def newDoubleStream(_: Region[r], prim: ##java.util.stream.DoubleStream): DoubleStream[r] = DoubleStream(prim)
 
@@ -114,7 +113,7 @@ namespace CollectionInterop/Stream {
         let r = Scoped.regionOf(s);
         let DoubleStream(s1) = s;
         let iter1 = iterator(s1 as ##java.util.stream.BaseStream);
-        let iter2 = CollectionInterop/RawIterator.new(r, iter1);
-        CollectionInterop/RawIterator.iterator(iter2)
+        let iter2 = Interop/Collections/RawIterator.new(r, iter1);
+        Interop/Collections/RawIterator.iterator(iter2)
 
 }
