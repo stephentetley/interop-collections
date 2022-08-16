@@ -1,7 +1,7 @@
 # interop-collections
 
-Marshaling and interoperation between Flix and Java's collection classes
+Defunct
 
-License: Apache-2.0
+Code moved to: 
 
-July 22 renamed from `collection-interop`.
+https://github.com/stephentetley/interop-base
